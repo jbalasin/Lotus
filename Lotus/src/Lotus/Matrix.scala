@@ -3,6 +3,15 @@ package Lotus
 class Matrix(length: Int, height: Int, data: List[Double]) {
     var rows: List[List[Double]] = data.grouped(length).toList
     var columns: List[List[Double]] = fillMatrixColumns(length,height,data)
+    val dataAsList:List[Double] = data
+
+    def getNumberOfColumns() : Int = {
+      columns.length
+    }
+    
+    def getNumberOfRows() : Int = {
+      rows.length
+    }
     
     def getColumn(colNum: Int) : List[Double] = {
       var myCol = List()
@@ -28,19 +37,25 @@ class Matrix(length: Int, height: Int, data: List[Double]) {
       that
     }
     
-    def ^(that:Matrix): Matrix = {
-      that
+    def ^(that:Int): Matrix = {
+      this
     }
     
+    def /(that:Double):Matrix = {
+      val newData = this.dataAsList.map { x => x/that }
+      new Matrix(this.getNumberOfRows(),this.getNumberOfColumns(),newData)
+    }
+    
+ // toString method for matrix class //
     def print() : Unit = {
       for(i <- 0 to this.height- 1){
         println(columns(i))
       }
-      
+    }    
+  // Returns a deep copy of matrix;; not yet implemented //
+    def copy(): Matrix = {
+      this
     }
-    
-    
-
     
 }
 
