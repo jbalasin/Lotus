@@ -4,40 +4,71 @@ class Matrix(length: Int, height: Int, data: List[Double]) {
     var rows: List[List[Double]] = data.grouped(length).toList
     var columns: List[List[Double]] = fillMatrixColumns(length,height,data)
     val dataAsList:List[Double] = data
-
+    val h = height
+    val l = length
+    
     def getNumberOfColumns() : Int = {
-      columns.length
+      length
     }
     
     def getNumberOfRows() : Int = {
-      rows.length
+      height
     }
     
+    def get(x:Int,y:Int) : Double = {
+      rows(x)(y)
+    }
+       
     def getColumn(colNum: Int) : List[Double] = {
-      var myCol = List()
-      var myCopy = rows(0)
-      
-      Nil
+      var ret = List()
+      def inner(ls:List[Double],ind:Int, start:Int, Finish:Int): List[Double] = {
+        if(start >= Finish) inner(this.get(start, ind)::ls,ind,start-1,Finish) else ls
+      }
+      inner(List(),colNum,height-1,0)
     }
     
     def fillMatrixColumns(length:Int,height:Int,data:List[Double]) : List[List[Double]] = {
       if(length * height != data.length) throw new DataMismatchError()
-      Nil
+      
+      def inner(ls: List[List[Double]],start:Int,stop:Int): List[List[Double]] = {
+        if(start >= stop) inner(getColumn(start)::ls,start-1,stop) else ls
+      }
+      
+      
+      inner(List(),getNumberOfColumns()-1,0)
     }
     
     def +(that:Matrix): Matrix = {
-      that
+      val thisVec = new Vector(this.dataAsList)
+      val thatVec = new Vector(that.dataAsList)
+      val difference = thisVec + thatVec
+      
+      new Matrix(that.getNumberOfColumns(),that.getNumberOfRows(),difference.vec)
     }
     
     def -(that:Matrix): Matrix = {
-      that
+      val thisVec = new Vector(this.dataAsList)
+      val thatVec = new Vector(that.dataAsList)
+      val difference = thisVec - thatVec
+      
+      new Matrix(that.getNumberOfColumns(),that.getNumberOfRows(),difference.vec)
     }
 
     def *(that:Matrix): Matrix = {
       that
     }
     
+    def *(that:Double) : Matrix = {
+      val newData = this.dataAsList.map { x => x*that }
+      new Matrix(this.getNumberOfRows(),this.getNumberOfColumns(),newData)
+    }
+    
     def ^(that:Int): Matrix = {
+      
+      def inner(mat:Matrix,count:Int,limit:Int): Matrix = {
+        if(count < limit) inner(mat * mat,count + 1,limit) else mat
+      }
+      inner(this,0,that)
       this
     }
     
@@ -46,16 +77,30 @@ class Matrix(length: Int, height: Int, data: List[Double]) {
       new Matrix(this.getNumberOfRows(),this.getNumberOfColumns(),newData)
     }
     
- // toString method for matrix class //
-    def print() : Unit = {
-      for(i <- 0 to this.height- 1){
-        println(columns(i))
-      }
-    }    
-  // Returns a deep copy of matrix;; not yet implemented //
-    def copy(): Matrix = {
-      this
+    def getInverse() : Matrix = {
+      this / this.getDeterminant()
     }
+    
+    def getDeterminant() : Double = {
+      0
+    }
+    
+    
+    // toString method for matrix class //
+    def print() : Unit = {
+      for(i <- 0 to this.length- 1){
+        println(rows(i))
+      }
+      
+    }
+    
+    // Returns a deep copy of matrix //
+    def copy(): Matrix = {
+      new Matrix(this.getNumberOfColumns(),this.getNumberOfRows(),this.dataAsList:::List())
+    }
+    
+    
+
     
 }
 
