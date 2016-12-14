@@ -55,9 +55,9 @@ class Matrix(length: Int, height: Int, data: List[Double]) {
     }
 
     def *(that:Matrix): Matrix = {
-      var f = (
-        i <- 0 to this.getNumberOfRows() - 1;
-        j <- 0 to that.getNumberOfColumns() - 1
+      var f = for (
+        i <- 0 until this.getNumberOfRows();
+        j <- 0 until that.getNumberOfColumns()
       ) yield ((new Vector(this.rows(i))) * (new Vector(that.columns(j))))
          
       new Matrix(that.getNumberOfColumns(),this.getNumberOfRows(),f.toList)
