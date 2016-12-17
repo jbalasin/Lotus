@@ -68,6 +68,10 @@ class Matrix(length: Int, height: Int, data: List[Double]) {
       new Matrix(this.getNumberOfRows(),this.getNumberOfColumns(),newData)
     }
     
+    def transpose() : Matrix = {
+     new Matrix(h,l,columns.flatten)   
+    }
+    
     def ^(that:Int): Matrix = {
       
       def inner(mat:Matrix,count:Int,limit:Int): Matrix = {
